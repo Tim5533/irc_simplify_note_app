@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:irc_simplify_note_app/view/input_page.dart';
 import 'package:irc_simplify_note_app/model/note.dart';
+import 'package:irc_simplify_note_app/note_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -10,40 +11,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int counter = 5;
-  List<Note> notes = [];
-  List<Note> searchNotes = [];
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    searchNotes = notes;
-  }
+  NoteService service = NoteService();
 
-
-  void deleteNote(int index) {
-    Note note = notes[index];
-    notes.remove(note);
-  }
-
-  void searchNote(String searchText) {
-    setState(() {
-      if (searchText.isEmpty){
-        searchNotes = notes;
-      }
-      else {
-        searchNotes = notes
-            .where((note) =>
-        note.title.toLowerCase().contains(searchText.toLowerCase()) ||
-            note.content.toLowerCase().contains(searchText.toLowerCase()))
-            .toList();
-      }
-    });
-
-  }
 
   @override
   Widget build(BuildContext context) {
+
+
     return Scaffold(
       backgroundColor: Colors.grey.shade900,
       body: Padding(
@@ -74,7 +48,7 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
             TextField(
-              onChanged: searchNote,
+              onChanged: service.searchNote,
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.search),
                 hintText: 'Search for......',
@@ -98,7 +72,7 @@ class _HomePageState extends State<HomePage> {
             ),
             Expanded(
               child: ListView.builder(
-                  itemCount: searchNotes.length,
+                  itemCount: service.searchNotes.length,
                   itemBuilder: (context, index) {
                     return Card(
                       child: Padding(
@@ -106,14 +80,14 @@ class _HomePageState extends State<HomePage> {
                         child: ListTile(
                           title: RichText(
                             text: TextSpan(
-                              text: '${searchNotes[index].title}\n',
+                              text: '${service.searchNotes[index].title}\n',
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 30,
                               ),
                               children: [
                                 TextSpan(
-                                  text: '${searchNotes[index].content}\n',
+                                  text: '${service.searchNotes[index].content}\n',
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 20,
@@ -123,7 +97,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           subtitle: Text(
-                            '${searchNotes[index].time}',
+                            '${service.searchNotes[index].time}',
                             style: TextStyle(
                               color: Colors.grey.shade800,
                             ),
@@ -132,7 +106,7 @@ class _HomePageState extends State<HomePage> {
                             icon: Icon(Icons.delete),
                             onPressed: () {
                               setState(() {
-                                deleteNote(index);
+                                service.deleteNote(index);
                               });
                             },
                           ),
@@ -150,12 +124,7 @@ class _HomePageState extends State<HomePage> {
               context, MaterialPageRoute(builder: (context) => InputPage()));
           setState(() {
             if (result != null) {
-              notes.add(Note(
-                  id: notes.length,
-                  title: result[0],
-                  content: result[1],
-                  time: DateTime.now()));
-              searchNotes = notes;
+              service.addnote(result[0], result[1]);
             }
           });
         },
