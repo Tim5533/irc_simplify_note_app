@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:irc_simplify_note_app/view/input_page.dart';
-import 'package:irc_simplify_note_app/model/note.dart';
 import 'package:irc_simplify_note_app/note_service.dart';
 
 class HomePage extends StatefulWidget {
@@ -11,8 +10,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  NoteService service = NoteService();
-
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +45,7 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
             TextField(
-              onChanged: service.searchNote,
+              onChanged: NoteService().searchNote,
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.search),
                 hintText: 'Search for......',
@@ -72,7 +69,7 @@ class _HomePageState extends State<HomePage> {
             ),
             Expanded(
               child: ListView.builder(
-                  itemCount: service.searchNotes.length,
+                  itemCount: NoteService.searchNotes.length,
                   itemBuilder: (context, index) {
                     return Card(
                       child: Padding(
@@ -80,14 +77,14 @@ class _HomePageState extends State<HomePage> {
                         child: ListTile(
                           title: RichText(
                             text: TextSpan(
-                              text: '${service.searchNotes[index].title}\n',
+                              text: '${NoteService.searchNotes[index].title}\n',
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 30,
                               ),
                               children: [
                                 TextSpan(
-                                  text: '${service.searchNotes[index].content}\n',
+                                  text: '${NoteService.searchNotes[index].content}\n',
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 20,
@@ -97,7 +94,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           subtitle: Text(
-                            '${service.searchNotes[index].time}',
+                            '${NoteService.searchNotes[index].time}',
                             style: TextStyle(
                               color: Colors.grey.shade800,
                             ),
@@ -106,7 +103,7 @@ class _HomePageState extends State<HomePage> {
                             icon: Icon(Icons.delete),
                             onPressed: () {
                               setState(() {
-                                service.deleteNote(index);
+                                NoteService().deleteNote(index);
                               });
                             },
                           ),
@@ -124,7 +121,7 @@ class _HomePageState extends State<HomePage> {
               context, MaterialPageRoute(builder: (context) => InputPage()));
           setState(() {
             if (result != null) {
-              service.addnote(result[0], result[1]);
+              NoteService().addnote(result[0], result[1]);
             }
           });
         },

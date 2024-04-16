@@ -1,8 +1,8 @@
 import 'model/note.dart';
 
 class NoteService {
-  List<Note> notes = [];
-  List<Note> searchNotes = [];
+  static List<Note> notes = [];
+  static List<Note> searchNotes = [];
 
   void deleteNote(int index) {
     Note note = notes[index];
